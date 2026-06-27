@@ -20,12 +20,19 @@ const accountRoutes = require("./src/routes/account");
 const aiRoutes = require("./src/routes/ai");
 const errorHandler = require("./src/middleware/errorHandler");
 
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
+
 const app = express();
 
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
+
+const swaggerDocument = YAML.load("./swagger.yaml");
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/leads", leadsRoutes);
