@@ -4,15 +4,20 @@ const User = require("../models/User");
 
 exports.register = async (req, res) => {
   const { name, email, password, company } = req.body;
-  if (!name || !email || !password || !company)
-    return res.status(400).json({ message: "Missing fields" });
+  // if (!name || !email || !password || !company)
+  //   return res.status(400).json({ message: "Missing fields" });
   const existing = await User.findOne({ email });
   if (existing)
     return res.status(400).json({ message: "Email already in use" });
   const hashed = await bcrypt.hash(password, 10);
-  const user = await User.create({ name, email, password: hashed });
+  const user = await User.create({
+    name,
+    email,
+    company,
+    password: hashed,
+  });
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
+    expiresIn: process.env.JWT_EXPIRES_IN,
   });
   res.status(201).json({
     user: { id: user._id, name: user.name, email: user.email },
