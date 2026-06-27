@@ -183,7 +183,7 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-    put:
+    patch:
       tags:
         - Leads
       summary: Update a lead
@@ -308,7 +308,7 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-    put:
+    patch:
       tags:
         - Campaigns
       summary: Update a campaign
