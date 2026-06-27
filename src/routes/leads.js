@@ -18,7 +18,7 @@ router.use(protect);
 
 router.route("/").get(getLeads).post(createLead);
 
-router.route("/:id").get(getLead).put(updateLead).delete(deleteLead);
+router.route("/:id").get(getLead).patch(updateLead).delete(deleteLead);
 
 router.get("/stats/overview", leadStats);
 

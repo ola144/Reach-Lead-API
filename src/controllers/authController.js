@@ -20,7 +20,7 @@ exports.register = async (req, res) => {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
   res.status(201).json({
-    user: { id: user._id, name: user.name, email: user.email },
+    user: { id: user._id, name: user.name, email: user.email, role: user.role },
     token,
   });
 };
@@ -34,10 +34,10 @@ exports.login = async (req, res) => {
   const ok = await bcrypt.compare(password, user.password);
   if (!ok) return res.status(400).json({ message: "Invalid credentials" });
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
+    expiresIn: process.env.JWT_EXPIRES_IN,
   });
   res.json({
-    user: { id: user._id, name: user.name, email: user.email },
+    user: { id: user._id, name: user.name, email: user.email, role: user.role },
     token,
   });
 };

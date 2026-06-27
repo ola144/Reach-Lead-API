@@ -20,7 +20,7 @@ router.route("/").get(getCampaigns).post(createCampaign);
 router
   .route("/:id")
   .get(getCampaign)
-  .put(updateCampaign)
+  .patch(updateCampaign)
   .delete(deleteCampaign);
 
 router.get("/dashboard/metrics", dashboardMetrics);
