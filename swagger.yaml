@@ -21,7 +21,26 @@ tags:
   - name: AI
 
 paths:
-  /api/auth/register:
+  /api/auth/user-details/{id}:
+    get:
+      tags:
+        - Auth
+      summary: Get single user details
+      operationId: getUserDetails
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: User details returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
     post:
       tags:
         - Auth
