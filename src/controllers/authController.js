@@ -27,15 +27,21 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
+
   if (!email || !password)
     return res.status(400).json({ message: "Missing fields" });
-  const user = await User.findOne({ email });
+
+  const user = await User.findOne({ email }).select("+password");
+
   if (!user) return res.status(400).json({ message: "Invalid credentials" });
   const ok = await bcrypt.compare(password, user.password);
+
   if (!ok) return res.status(400).json({ message: "Invalid credentials" });
+
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
+
   res.json({
     user: { id: user._id, name: user.name, email: user.email, role: user.role },
     token,
