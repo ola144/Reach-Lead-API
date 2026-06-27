@@ -41,6 +41,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
 
+  /api/auth/register:
     post:
       tags:
         - Auth
