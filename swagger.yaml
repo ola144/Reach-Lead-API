@@ -8,7 +8,7 @@ info:
 servers:
   - url: http://localhost:5000
     description: Local
-  - url: https://your-app-name.onrender.com
+  - url: https://reach-lead-api.onrender.com/
     description: Production
 
 tags:
