@@ -1,0 +1,1635 @@
+openapi: 3.0.3
+
+info:
+  title: Reach Leads API
+  version: 1.0.0
+  description: API documentation for the Reach Leads Node.js and Express backend.
+
+servers:
+  - url: http://localhost:5000
+    description: Local
+  - url: https://your-app-name.onrender.com
+    description: Production
+
+tags:
+  - name: Auth
+  - name: Leads
+  - name: Campaigns
+  - name: Outreach
+  - name: Analytics
+  - name: Accounts
+  - name: AI
+
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a user
+      operationId: registerUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: User registered successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Log in a user
+      operationId: loginUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: User logged in successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /api/leads:
+    get:
+      tags:
+        - Leads
+      summary: Get all leads
+      operationId: getLeads
+      responses:
+        "200":
+          description: Leads returned successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessListResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Lead"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      tags:
+        - Leads
+      summary: Create a lead
+      operationId: createLead
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeadInput"
+      responses:
+        "201":
+          description: Lead created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeadResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/leads/stats/overview:
+    get:
+      tags:
+        - Leads
+      summary: Get lead status statistics
+      operationId: getLeadStats
+      responses:
+        "200":
+          description: Lead statistics returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AggregateCountResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/leads/stats/pipeline:
+    get:
+      tags:
+        - Leads
+      summary: Get lead pipeline statistics
+      operationId: getLeadPipelineStats
+      responses:
+        "200":
+          description: Lead pipeline statistics returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AggregateTotalResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/leads/{id}:
+    get:
+      tags:
+        - Leads
+      summary: Get a lead
+      operationId: getLead
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Lead returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeadResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags:
+        - Leads
+      summary: Update a lead
+      operationId: updateLead
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeadUpdateInput"
+      responses:
+        "200":
+          description: Lead updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeadResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags:
+        - Leads
+      summary: Delete a lead
+      operationId: deleteLead
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Lead deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/campaigns:
+    get:
+      tags:
+        - Campaigns
+      summary: Get all campaigns
+      operationId: getCampaigns
+      responses:
+        "200":
+          description: Campaigns returned successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessListResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Campaign"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      tags:
+        - Campaigns
+      summary: Create a campaign
+      operationId: createCampaign
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CampaignInput"
+      responses:
+        "201":
+          description: Campaign created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CampaignResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/campaigns/dashboard/metrics:
+    get:
+      tags:
+        - Campaigns
+      summary: Get campaign dashboard metrics
+      operationId: getCampaignDashboardMetrics
+      responses:
+        "200":
+          description: Campaign dashboard metrics returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CampaignDashboardMetrics"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/campaigns/{id}:
+    get:
+      tags:
+        - Campaigns
+      summary: Get a campaign
+      operationId: getCampaign
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Campaign returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CampaignResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags:
+        - Campaigns
+      summary: Update a campaign
+      operationId: updateCampaign
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CampaignUpdateInput"
+      responses:
+        "200":
+          description: Campaign updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CampaignResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags:
+        - Campaigns
+      summary: Delete a campaign
+      operationId: deleteCampaign
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Campaign deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/outreach/send:
+    post:
+      tags:
+        - Outreach
+      summary: Create outreach message
+      operationId: createOutreach
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OutreachInput"
+      responses:
+        "201":
+          description: Outreach message created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OutreachResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/outreach/history:
+    get:
+      tags:
+        - Outreach
+      summary: Get outreach history
+      operationId: getOutreachHistory
+      responses:
+        "200":
+          description: Outreach history returned successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessListResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Outreach"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/outreach/stats:
+    get:
+      tags:
+        - Outreach
+      summary: Get outreach status statistics
+      operationId: getOutreachStats
+      responses:
+        "200":
+          description: Outreach statistics returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AggregateTotalResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/outreach/{id}/status:
+    patch:
+      tags:
+        - Outreach
+      summary: Update outreach status
+      operationId: updateOutreachStatus
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OutreachStatusUpdateInput"
+      responses:
+        "200":
+          description: Outreach status updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OutreachResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/analytics/dashboard:
+    get:
+      tags:
+        - Analytics
+      summary: Get dashboard analytics
+      operationId: getDashboardAnalytics
+      responses:
+        "200":
+          description: Dashboard analytics returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardAnalyticsResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/analytics/monthly:
+    get:
+      tags:
+        - Analytics
+      summary: Get monthly performance analytics
+      operationId: getMonthlyPerformance
+      responses:
+        "200":
+          description: Monthly performance analytics returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MonthlyPerformanceResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/analytics/platforms:
+    get:
+      tags:
+        - Analytics
+      summary: Get platform analytics
+      operationId: getPlatformBreakdown
+      responses:
+        "200":
+          description: Platform analytics returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformBreakdownResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/analytics/pipeline:
+    get:
+      tags:
+        - Analytics
+      summary: Get pipeline analytics
+      operationId: getPipelineAnalytics
+      responses:
+        "200":
+          description: Pipeline analytics returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AggregateTotalResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/analytics/campaigns/top:
+    get:
+      tags:
+        - Analytics
+      summary: Get top campaigns
+      operationId: getTopCampaigns
+      responses:
+        "200":
+          description: Top campaigns returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopCampaignsResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/analytics/outreach:
+    get:
+      tags:
+        - Analytics
+      summary: Get outreach analytics
+      operationId: getOutreachAnalytics
+      responses:
+        "200":
+          description: Outreach analytics returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AggregateTotalResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/accounts:
+    get:
+      tags:
+        - Accounts
+      summary: Get connected accounts
+      operationId: getAccounts
+      responses:
+        "200":
+          description: Accounts returned successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessListResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/SocialAccount"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      tags:
+        - Accounts
+      summary: Connect an account
+      operationId: connectAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SocialAccountInput"
+      responses:
+        "201":
+          description: Account connected successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SocialAccountResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/accounts/stats/platforms:
+    get:
+      tags:
+        - Accounts
+      summary: Get account statistics by platform
+      operationId: getAccountStats
+      responses:
+        "200":
+          description: Account platform statistics returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AggregateTotalResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/accounts/health:
+    get:
+      tags:
+        - Accounts
+      summary: Get account health counts
+      operationId: getAccountHealth
+      responses:
+        "200":
+          description: Account health returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountHealthResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/accounts/{id}:
+    get:
+      tags:
+        - Accounts
+      summary: Get an account
+      operationId: getAccount
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Account returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SocialAccountResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags:
+        - Accounts
+      summary: Delete an account
+      operationId: deleteAccount
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Account removed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/accounts/{id}/disconnect:
+    patch:
+      tags:
+        - Accounts
+      summary: Disconnect an account
+      operationId: disconnectAccount
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Account disconnected successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SocialAccountResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/ai/generate:
+    post:
+      tags:
+        - AI
+      summary: Generate AI content
+      operationId: generateContent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiGenerateRequest"
+      responses:
+        "200":
+          description: AI content generated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiGenerationResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/ai/outreach:
+    post:
+      tags:
+        - AI
+      summary: Generate an outreach message
+      operationId: generateOutreachMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiOutreachRequest"
+      responses:
+        "200":
+          description: Outreach message generated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiMessageResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/ai/followup:
+    post:
+      tags:
+        - AI
+      summary: Generate a follow-up message
+      operationId: generateFollowupMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiFollowupRequest"
+      responses:
+        "200":
+          description: Follow-up message generated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiMessageResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/ai/rewrite:
+    post:
+      tags:
+        - AI
+      summary: Rewrite a message
+      operationId: rewriteMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiRewriteRequest"
+      responses:
+        "200":
+          description: Message rewritten successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiMessageResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/ai/subject:
+    post:
+      tags:
+        - AI
+      summary: Generate subject lines
+      operationId: generateSubjectLines
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiSubjectRequest"
+      responses:
+        "200":
+          description: Subject lines generated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiMessageResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/ai/history:
+    get:
+      tags:
+        - AI
+      summary: Get AI generation history
+      operationId: getAiHistory
+      responses:
+        "200":
+          description: AI generation history returned successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/AiGeneration"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      description: MongoDB ObjectId.
+      schema:
+        type: string
+        example: 64b7f2f62a37d55c9f1c1234
+
+  responses:
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Unauthorized:
+      description: Missing or invalid bearer token.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+  schemas:
+    ObjectId:
+      type: string
+      example: 64b7f2f62a37d55c9f1c1234
+
+    TimestampFields:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+
+    SuccessListResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - type: object
+          properties:
+            count:
+              type: integer
+              example: 1
+
+    MessageResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - type: object
+          properties:
+            message:
+              type: string
+              example: Resource deleted
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid credentials
+
+    User:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: "#/components/schemas/ObjectId"
+            name:
+              type: string
+              example: Jane Doe
+            email:
+              type: string
+              format: email
+              example: jane@example.com
+            company:
+              type: string
+              example: Acme Inc
+            role:
+              type: string
+              example: user
+            avatar:
+              type: string
+              nullable: true
+        - $ref: "#/components/schemas/TimestampFields"
+
+    AuthUser:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/ObjectId"
+        name:
+          type: string
+          example: Jane Doe
+        email:
+          type: string
+          format: email
+          example: jane@example.com
+
+    RegisterRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - company
+      properties:
+        name:
+          type: string
+          example: Jane Doe
+        email:
+          type: string
+          format: email
+          example: jane@example.com
+        password:
+          type: string
+          format: password
+          example: secret123
+        company:
+          type: string
+          example: Acme Inc
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: jane@example.com
+        password:
+          type: string
+          format: password
+          example: secret123
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/AuthUser"
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+    Platform:
+      type: string
+      enum:
+        - linkedin
+        - twitter
+        - instagram
+        - facebook
+        - email
+
+    LeadSource:
+      type: string
+      enum:
+        - linkedin
+        - twitter
+        - instagram
+        - facebook
+        - website
+        - manual
+
+    LeadStatus:
+      type: string
+      enum:
+        - new
+        - contacted
+        - qualified
+        - proposal
+        - won
+        - lost
+
+    LeadInput:
+      type: object
+      required:
+        - firstName
+        - email
+      properties:
+        firstName:
+          type: string
+          example: Alex
+        lastName:
+          type: string
+          example: Morgan
+        email:
+          type: string
+          format: email
+          example: alex@example.com
+        phone:
+          type: string
+          example: "+15551234567"
+        company:
+          type: string
+          example: Example Co
+        jobTitle:
+          type: string
+          example: Head of Sales
+        source:
+          $ref: "#/components/schemas/LeadSource"
+        status:
+          $ref: "#/components/schemas/LeadStatus"
+        notes:
+          type: string
+          example: Interested in outbound automation.
+        campaign:
+          $ref: "#/components/schemas/ObjectId"
+
+    LeadUpdateInput:
+      allOf:
+        - $ref: "#/components/schemas/LeadInput"
+
+    Lead:
+      allOf:
+        - type: object
+          properties:
+            _id:
+              $ref: "#/components/schemas/ObjectId"
+            firstName:
+              type: string
+            lastName:
+              type: string
+            email:
+              type: string
+              format: email
+            phone:
+              type: string
+            company:
+              type: string
+            jobTitle:
+              type: string
+            source:
+              $ref: "#/components/schemas/LeadSource"
+            status:
+              $ref: "#/components/schemas/LeadStatus"
+            notes:
+              type: string
+            campaign:
+              oneOf:
+                - $ref: "#/components/schemas/ObjectId"
+                - type: object
+                  properties:
+                    _id:
+                      $ref: "#/components/schemas/ObjectId"
+                    name:
+                      type: string
+                    platform:
+                      $ref: "#/components/schemas/Platform"
+            owner:
+              $ref: "#/components/schemas/ObjectId"
+        - $ref: "#/components/schemas/TimestampFields"
+
+    LeadResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/Lead"
+
+    CampaignStatus:
+      type: string
+      enum:
+        - draft
+        - active
+        - paused
+        - completed
+
+    CampaignInput:
+      type: object
+      required:
+        - name
+        - platform
+      properties:
+        name:
+          type: string
+          example: Q3 LinkedIn Leads
+        description:
+          type: string
+          example: Campaign targeting SaaS founders.
+        platform:
+          $ref: "#/components/schemas/Platform"
+        status:
+          $ref: "#/components/schemas/CampaignStatus"
+        budget:
+          type: number
+          example: 500
+        targetLeads:
+          type: number
+          example: 100
+        generatedLeads:
+          type: number
+          example: 0
+        messagesSent:
+          type: number
+          example: 0
+        responseRate:
+          type: number
+          example: 0
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+
+    CampaignUpdateInput:
+      allOf:
+        - $ref: "#/components/schemas/CampaignInput"
+
+    Campaign:
+      allOf:
+        - type: object
+          properties:
+            _id:
+              $ref: "#/components/schemas/ObjectId"
+            name:
+              type: string
+            description:
+              type: string
+            platform:
+              $ref: "#/components/schemas/Platform"
+            status:
+              $ref: "#/components/schemas/CampaignStatus"
+            budget:
+              type: number
+            targetLeads:
+              type: number
+            generatedLeads:
+              type: number
+            messagesSent:
+              type: number
+            responseRate:
+              type: number
+            startDate:
+              type: string
+              format: date-time
+            endDate:
+              type: string
+              format: date-time
+            owner:
+              $ref: "#/components/schemas/ObjectId"
+        - $ref: "#/components/schemas/TimestampFields"
+
+    CampaignResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/Campaign"
+
+    CampaignDashboardMetrics:
+      type: object
+      properties:
+        totalCampaigns:
+          type: integer
+          example: 8
+        activeCampaigns:
+          type: integer
+          example: 3
+        totalLeads:
+          type: integer
+          example: 140
+        totalMessages:
+          type: integer
+          example: 300
+
+    OutreachStatus:
+      type: string
+      enum:
+        - draft
+        - scheduled
+        - sent
+        - delivered
+        - opened
+        - replied
+        - failed
+
+    OutreachInput:
+      type: object
+      required:
+        - lead
+        - campaign
+        - platform
+        - message
+      properties:
+        lead:
+          $ref: "#/components/schemas/ObjectId"
+        campaign:
+          $ref: "#/components/schemas/ObjectId"
+        platform:
+          $ref: "#/components/schemas/Platform"
+        subject:
+          type: string
+          example: Quick idea for your team
+        message:
+          type: string
+          example: Hi Alex, I noticed your team is hiring SDRs...
+        status:
+          $ref: "#/components/schemas/OutreachStatus"
+        scheduledFor:
+          type: string
+          format: date-time
+
+    OutreachStatusUpdateInput:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/OutreachStatus"
+        sentAt:
+          type: string
+          format: date-time
+        repliedAt:
+          type: string
+          format: date-time
+
+    Outreach:
+      allOf:
+        - type: object
+          properties:
+            _id:
+              $ref: "#/components/schemas/ObjectId"
+            lead:
+              oneOf:
+                - $ref: "#/components/schemas/ObjectId"
+                - type: object
+                  properties:
+                    _id:
+                      $ref: "#/components/schemas/ObjectId"
+                    firstName:
+                      type: string
+                    lastName:
+                      type: string
+                    email:
+                      type: string
+                      format: email
+            campaign:
+              oneOf:
+                - $ref: "#/components/schemas/ObjectId"
+                - type: object
+                  properties:
+                    _id:
+                      $ref: "#/components/schemas/ObjectId"
+                    name:
+                      type: string
+            sender:
+              $ref: "#/components/schemas/ObjectId"
+            platform:
+              $ref: "#/components/schemas/Platform"
+            subject:
+              type: string
+            message:
+              type: string
+            status:
+              $ref: "#/components/schemas/OutreachStatus"
+            scheduledFor:
+              type: string
+              format: date-time
+            sentAt:
+              type: string
+              format: date-time
+            repliedAt:
+              type: string
+              format: date-time
+        - $ref: "#/components/schemas/TimestampFields"
+
+    OutreachResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/Outreach"
+
+    SocialAccountStatus:
+      type: string
+      enum:
+        - connected
+        - disconnected
+        - expired
+
+    SocialAccountInput:
+      type: object
+      required:
+        - platform
+        - accountName
+        - accountId
+      properties:
+        platform:
+          $ref: "#/components/schemas/Platform"
+        accountName:
+          type: string
+          example: Jane Doe LinkedIn
+        accountId:
+          type: string
+          example: linkedin-123
+        accessToken:
+          type: string
+          nullable: true
+        refreshToken:
+          type: string
+          nullable: true
+        tokenExpiresAt:
+          type: string
+          format: date-time
+        status:
+          $ref: "#/components/schemas/SocialAccountStatus"
+        lastSyncedAt:
+          type: string
+          format: date-time
+
+    SocialAccount:
+      allOf:
+        - type: object
+          properties:
+            _id:
+              $ref: "#/components/schemas/ObjectId"
+            owner:
+              $ref: "#/components/schemas/ObjectId"
+            platform:
+              $ref: "#/components/schemas/Platform"
+            accountName:
+              type: string
+            accountId:
+              type: string
+            accessToken:
+              type: string
+              nullable: true
+            refreshToken:
+              type: string
+              nullable: true
+            tokenExpiresAt:
+              type: string
+              format: date-time
+            status:
+              $ref: "#/components/schemas/SocialAccountStatus"
+            lastSyncedAt:
+              type: string
+              format: date-time
+        - $ref: "#/components/schemas/TimestampFields"
+
+    SocialAccountResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/SocialAccount"
+
+    AccountHealthResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                connected:
+                  type: integer
+                  example: 2
+                expired:
+                  type: integer
+                  example: 1
+                disconnected:
+                  type: integer
+                  example: 0
+
+    AiGenerationType:
+      type: string
+      enum:
+        - outreach
+        - followup
+        - campaign
+        - rewrite
+        - subject
+
+    AiGenerateRequest:
+      type: object
+      required:
+        - prompt
+        - type
+      properties:
+        prompt:
+          type: string
+          example: Write a short campaign intro for SaaS founders.
+        type:
+          $ref: "#/components/schemas/AiGenerationType"
+
+    AiOutreachRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: Alex
+        company:
+          type: string
+          example: Example Co
+        jobTitle:
+          type: string
+          example: Founder
+        goal:
+          type: string
+          example: Book a 15 minute discovery call.
+
+    AiFollowupRequest:
+      type: object
+      properties:
+        originalMessage:
+          type: string
+          example: Hi Alex, I wanted to share a quick idea...
+
+    AiRewriteRequest:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Can we schedule a call?
+        tone:
+          type: string
+          example: friendly
+
+    AiSubjectRequest:
+      type: object
+      properties:
+        purpose:
+          type: string
+          example: Cold email to SaaS founders about lead generation.
+
+    AiGeneration:
+      allOf:
+        - type: object
+          properties:
+            _id:
+              $ref: "#/components/schemas/ObjectId"
+            user:
+              $ref: "#/components/schemas/ObjectId"
+            type:
+              $ref: "#/components/schemas/AiGenerationType"
+            prompt:
+              type: string
+            output:
+              type: string
+            model:
+              type: string
+              example: gpt-4o-mini
+        - $ref: "#/components/schemas/TimestampFields"
+
+    AiGenerationResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/AiGeneration"
+
+    AiMessageResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - type: object
+          properties:
+            message:
+              type: string
+              example: Hi Alex, I noticed your team is growing...
+
+    AggregateCount:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: new
+        count:
+          type: integer
+          example: 12
+
+    AggregateTotal:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: sent
+        total:
+          type: integer
+          example: 25
+
+    AggregateCountResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "#/components/schemas/AggregateCount"
+
+    AggregateTotalResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "#/components/schemas/AggregateTotal"
+
+    DashboardAnalyticsResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                totalCampaigns:
+                  type: integer
+                  example: 8
+                totalLeads:
+                  type: integer
+                  example: 140
+                activeCampaigns:
+                  type: integer
+                  example: 3
+                totalMessages:
+                  type: integer
+                  example: 300
+                responseRate:
+                  oneOf:
+                    - type: string
+                      example: "18.5"
+                    - type: number
+                      example: 0
+                conversionRate:
+                  oneOf:
+                    - type: string
+                      example: "7.1"
+                    - type: number
+                      example: 0
+                connectedAccounts:
+                  type: integer
+                  example: 2
+
+    MonthlyPerformanceResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                type: object
+                properties:
+                  _id:
+                    type: object
+                    properties:
+                      month:
+                        type: integer
+                        example: 6
+                  campaigns:
+                    type: integer
+                    example: 3
+                  leads:
+                    type: integer
+                    example: 42
+                  messages:
+                    type: integer
+                    example: 90
+
+    PlatformBreakdownResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                type: object
+                properties:
+                  _id:
+                    $ref: "#/components/schemas/Platform"
+                  campaigns:
+                    type: integer
+                    example: 4
+                  leads:
+                    type: integer
+                    example: 80
+                  messages:
+                    type: integer
+                    example: 200
+
+    TopCampaign:
+      type: object
+      properties:
+        _id:
+          $ref: "#/components/schemas/ObjectId"
+        name:
+          type: string
+        generatedLeads:
+          type: number
+        messagesSent:
+          type: number
+        responseRate:
+          type: number
+        status:
+          $ref: "#/components/schemas/CampaignStatus"
+
+    TopCampaignsResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "#/components/schemas/TopCampaign"
+
+security:
+  - bearerAuth: []
